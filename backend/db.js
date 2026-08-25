@@ -1,13 +1,16 @@
-const mysql = require("mysql2");
+require("dotenv").config();
 
-const pool = mysql.createPool({
-    host: "localhost",
-    user: "root",
-    password: "root",
-    database: "agendamento_db",
-    waitForConnections: true,
-    connectionLimit: 10,
-    queueLimit: 0
+const { Pool } = require("pg");
+
+const pool = new Pool({
+  connectionString: process.env.DATABASE_URL,
+  ssl: {
+    rejectUnauthorized: false
+  }
 });
 
-module.exports = pool.promise();
+pool.on("error", (err) => {
+  console.error("Erro inesperado no PostgreSQL:", err);
+});
+
+module.exports = pool;
