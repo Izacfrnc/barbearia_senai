@@ -559,18 +559,96 @@ router.put("/agendamentos/:id", async (req, res) => {
 // REMOVER AGENDAMENTO
 // ======================================================
 
-router.delete("/agendamentos/:id", async (req, res) => {
-
+router.put("/agendamentos/:id", async (req, res) => {
   try {
-
     const { id } = req.params;
 
+    const {
+      data,
+      horario,
+      clientes_id_clientes,
+      servico_id_servico,
+      funcionarios_id_funcionarios
+    } = req.body;
+
+    if (
+      !data ||
+      !horario ||
+      !clientes_id_clientes ||
+      !servico_id_servico ||
+      !funcionarios_id_funcionarios
+    ) {
+      return res.status(400).json({
+        erro: "Preencha todos os campos"
+      });
+    }
+
+    // Verificar se o agendamento pertence ao cliente
+    const dono = await db.query(
+      `
+      SELECT id_agendamentos
+      FROM agendamentos
+      WHERE id_agendamentos = $1
+        AND clientes_id_clientes = $2
+      `,
+      [
+        id,
+        clientes_id_clientes
+      ]
+    );
+
+    if (dono.rows.length === 0) {
+      return res.status(403).json({
+        erro: "Você não pode editar o agendamento de outro cliente"
+      });
+    }
+
+    // Verificar conflito
+    const existe = await db.query(
+      `
+      SELECT id_agendamentos
+      FROM agendamentos
+      WHERE data = $1
+        AND horario = $2
+        AND funcionarios_id_funcionarios = $3
+        AND id_agendamentos <> $4
+      `,
+      [
+        data,
+        horario,
+        funcionarios_id_funcionarios,
+        id
+      ]
+    );
+
+    if (existe.rows.length) {
+      return res.status(409).json({
+        erro:
+          "Esse funcionário já possui agendamento nesse dia e horário"
+      });
+    }
+
+    // Atualizar
     const result = await db.query(
       `
-      DELETE FROM agendamentos
-      WHERE id_agendamentos = $1
+      UPDATE agendamentos
+      SET
+        data = $1,
+        horario = $2,
+        clientes_id_clientes = $3,
+        servico_id_servico = $4,
+        funcionarios_id_funcionarios = $5
+      WHERE id_agendamentos = $6
+      RETURNING id_agendamentos
       `,
-      [id]
+      [
+        data,
+        horario,
+        clientes_id_clientes,
+        servico_id_servico,
+        funcionarios_id_funcionarios,
+        id
+      ]
     );
 
     if (result.rowCount === 0) {
@@ -580,15 +658,13 @@ router.delete("/agendamentos/:id", async (req, res) => {
     }
 
     res.json({
-      mensagem:
-        "Agendamento removido com sucesso"
+      mensagem: "Agendamento atualizado com sucesso"
     });
 
   } catch (error) {
     erro500(res, error);
   }
 });
-
 // ======================================================
 // CADASTRO DE USUÁRIO
 // ======================================================

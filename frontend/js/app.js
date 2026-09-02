@@ -1,4 +1,4 @@
-const API_URL = "http://localhost:3000";
+const API_URL = "https://gz-barbearia-1.onrender.com/";
 
 document.addEventListener("DOMContentLoaded", () => {
     const page = document.body.dataset.page;
@@ -59,7 +59,10 @@ function formatarData(data) {
     return dataObj.toLocaleDateString("pt-BR");
 }
 
-function criarLinhaVazia(colspan, texto = "Nenhum registro encontrado") {
+function criarLinhaVazia(
+    colspan,
+    texto = "Nenhum registro encontrado"
+) {
     return `
         <tr>
             <td colspan="${colspan}" class="mensagem-vazia">
@@ -85,6 +88,7 @@ async function iniciarIndex() {
     const totalFuncionarios = document.getElementById("total-funcionarios");
     const totalServicos = document.getElementById("total-servicos");
     const totalAgendamentos = document.getElementById("total-agendamentos");
+
     const listaAgendamentosHome =
         document.getElementById("lista-agendamentos-home");
 
@@ -102,7 +106,8 @@ async function iniciarIndex() {
         ]);
 
         if (statusApi) {
-            statusApi.textContent = "Conexão com backend funcionando.";
+            statusApi.textContent =
+                "Conexão com backend funcionando.";
         }
 
         if (totalClientes) {
@@ -130,16 +135,17 @@ async function iniciarIndex() {
             return;
         }
 
-        listaAgendamentosHome.innerHTML = agendamentos.map(item => `
-            <tr>
-                <td>${item.id_agendamentos ?? ""}</td>
-                <td>${formatarData(item.data)}</td>
-                <td>${item.horario ?? ""}</td>
-                <td>${item.cliente ?? ""}</td>
-                <td>${item.servico ?? ""}</td>
-                <td>${item.funcionario ?? ""}</td>
-            </tr>
-        `).join("");
+        listaAgendamentosHome.innerHTML =
+            agendamentos.map(item => `
+                <tr>
+                    <td>${item.id_agendamentos ?? ""}</td>
+                    <td>${formatarData(item.data)}</td>
+                    <td>${item.horario ?? ""}</td>
+                    <td>${item.cliente ?? ""}</td>
+                    <td>${item.servico ?? ""}</td>
+                    <td>${item.funcionario ?? ""}</td>
+                </tr>
+            `).join("");
 
     } catch (error) {
         console.error(error);
@@ -182,9 +188,8 @@ async function carregarTudoDashboard() {
 
         await carregarSelectsAgendamento();
 
-        const tabela = document.getElementById(
-            "lista-agendamentos"
-        );
+        const tabela =
+            document.getElementById("lista-agendamentos");
 
         if (tabela) {
             await carregarAgendamentos();
@@ -203,7 +208,9 @@ async function carregarTudoDashboard() {
 ========================================================= */
 
 function configurarFormularioClientes() {
-    const form = document.getElementById("form-cliente");
+    const form =
+        document.getElementById("form-cliente");
+
     const cancelar =
         document.getElementById("cancelar-cliente");
 
@@ -232,27 +239,6 @@ async function carregarClientes() {
         const clientes =
             await request("/clientes");
 
-            const nomeUsuario =
-    localStorage.getItem("nome");
-
-const telefoneUsuario =
-    localStorage.getItem("telefone");
-
-if (!nomeUsuario || !telefoneUsuario) {
-
-    alert(
-        "Dados do usuário não encontrados. Faça login novamente."
-    );
-
-    return;
-}
-
-const cliente = await request(
-    `/cliente-logado?nome=${encodeURIComponent(nomeUsuario)}&telefone=${encodeURIComponent(telefoneUsuario)}`
-);
-
-   
-
         if (!clientes.length) {
             tbody.innerHTML =
                 criarLinhaVazia(4);
@@ -260,34 +246,37 @@ const cliente = await request(
             return;
         }
 
-        tbody.innerHTML = clientes.map(cliente => `
-            <tr>
-                <td>${cliente.id_clientes ?? ""}</td>
-                <td>${cliente.nome ?? ""}</td>
-                <td>${cliente.telefone ?? ""}</td>
+        tbody.innerHTML =
+            clientes.map(cliente => `
+                <tr>
+                    <td>${cliente.id_clientes ?? ""}</td>
 
-                <td>
-                    <div class="acoes">
+                    <td>${cliente.nome ?? ""}</td>
 
-                        <button
-                            type="button"
-                            onclick='editarCliente(${JSON.stringify(cliente)})'
-                        >
-                            Editar
-                        </button>
+                    <td>${cliente.telefone ?? ""}</td>
 
-                        <button
-                            type="button"
-                            class="perigo"
-                            onclick="excluirCliente(${cliente.id_clientes})"
-                        >
-                            Excluir
-                        </button>
+                    <td>
+                        <div class="acoes">
 
-                    </div>
-                </td>
-            </tr>
-        `).join("");
+                            <button
+                                type="button"
+                                onclick='editarCliente(${JSON.stringify(cliente)})'
+                            >
+                                Editar
+                            </button>
+
+                            <button
+                                type="button"
+                                class="perigo"
+                                onclick="excluirCliente(${cliente.id_clientes})"
+                            >
+                                Excluir
+                            </button>
+
+                        </div>
+                    </td>
+                </tr>
+            `).join("");
 
     } catch (error) {
         console.error(error);
@@ -328,6 +317,7 @@ async function salvarCliente(event) {
                 method: "PUT",
                 body: JSON.stringify(payload)
             });
+
         } else {
             await request("/clientes", {
                 method: "POST",
@@ -452,33 +442,41 @@ async function carregarFuncionarios() {
             return;
         }
 
-        tbody.innerHTML = funcionarios.map(funcionario => `
-            <tr>
-                <td>${funcionario.id_funcionarios ?? ""}</td>
-                <td>${funcionario.nome ?? ""}</td>
+        tbody.innerHTML =
+            funcionarios.map(funcionario => `
+                <tr>
 
-                <td>
-                    <div class="acoes">
+                    <td>
+                        ${funcionario.id_funcionarios ?? ""}
+                    </td>
 
-                        <button
-                            type="button"
-                            onclick='editarFuncionario(${JSON.stringify(funcionario)})'
-                        >
-                            Editar
-                        </button>
+                    <td>
+                        ${funcionario.nome ?? ""}
+                    </td>
 
-                        <button
-                            type="button"
-                            class="perigo"
-                            onclick="excluirFuncionario(${funcionario.id_funcionarios})"
-                        >
-                            Excluir
-                        </button>
+                    <td>
+                        <div class="acoes">
 
-                    </div>
-                </td>
-            </tr>
-        `).join("");
+                            <button
+                                type="button"
+                                onclick='editarFuncionario(${JSON.stringify(funcionario)})'
+                            >
+                                Editar
+                            </button>
+
+                            <button
+                                type="button"
+                                class="perigo"
+                                onclick="excluirFuncionario(${funcionario.id_funcionarios})"
+                            >
+                                Excluir
+                            </button>
+
+                        </div>
+                    </td>
+
+                </tr>
+            `).join("");
 
     } catch (error) {
         console.error(error);
@@ -498,8 +496,7 @@ async function salvarFuncionario(event) {
         document.getElementById("funcionario-id")?.value;
 
     const nome =
-        document.getElementById("funcionario-nome")
-            ?.value.trim();
+        document.getElementById("funcionario-nome")?.value.trim();
 
     if (!nome) {
         alert("Informe o nome do funcionário.");
@@ -516,6 +513,7 @@ async function salvarFuncionario(event) {
                 method: "PUT",
                 body: JSON.stringify(payload)
             });
+
         } else {
             await request("/funcionarios", {
                 method: "POST",
@@ -635,37 +633,51 @@ async function carregarServicos() {
             return;
         }
 
-        tbody.innerHTML = servicos.map(servico => `
-            <tr>
-                <td>${servico.id_servico ?? ""}</td>
-                <td>${servico.tipo ?? ""}</td>
-                <td>
-                    R$ ${Number(servico.preco || 0).toFixed(2).replace(".", ",")}
-                </td>
-                <td>${servico.imagem ?? ""}</td>
+        tbody.innerHTML =
+            servicos.map(servico => `
+                <tr>
 
-                <td>
-                    <div class="acoes">
+                    <td>
+                        ${servico.id_servico ?? ""}
+                    </td>
 
-                        <button
-                            type="button"
-                            onclick='editarServico(${JSON.stringify(servico)})'
-                        >
-                            Editar
-                        </button>
+                    <td>
+                        ${servico.tipo ?? ""}
+                    </td>
 
-                        <button
-                            type="button"
-                            class="perigo"
-                            onclick="excluirServico(${servico.id_servico})"
-                        >
-                            Excluir
-                        </button>
+                    <td>
+                        R$ ${Number(
+                            servico.preco || 0
+                        ).toFixed(2).replace(".", ",")}
+                    </td>
 
-                    </div>
-                </td>
-            </tr>
-        `).join("");
+                    <td>
+                        ${servico.imagem ?? ""}
+                    </td>
+
+                    <td>
+                        <div class="acoes">
+
+                            <button
+                                type="button"
+                                onclick='editarServico(${JSON.stringify(servico)})'
+                            >
+                                Editar
+                            </button>
+
+                            <button
+                                type="button"
+                                class="perigo"
+                                onclick="excluirServico(${servico.id_servico})"
+                            >
+                                Excluir
+                            </button>
+
+                        </div>
+                    </td>
+
+                </tr>
+            `).join("");
 
     } catch (error) {
         console.error(error);
@@ -685,16 +697,13 @@ async function salvarServico(event) {
         document.getElementById("servico-id")?.value;
 
     const tipo =
-        document.getElementById("servico-tipo")
-            ?.value.trim();
+        document.getElementById("servico-tipo")?.value.trim();
 
     const preco =
-        document.getElementById("servico-preco")
-            ?.value;
+        document.getElementById("servico-preco")?.value;
 
     const imagem =
-        document.getElementById("servico-imagem")
-            ?.value.trim();
+        document.getElementById("servico-imagem")?.value.trim();
 
     if (!tipo || preco === "") {
         alert("Preencha o tipo e o preço.");
@@ -713,6 +722,7 @@ async function salvarServico(event) {
                 method: "PUT",
                 body: JSON.stringify(payload)
             });
+
         } else {
             await request("/servicos", {
                 method: "POST",
@@ -810,14 +820,10 @@ function configurarFormularioAgendamentos() {
         document.getElementById("form-agendamento");
 
     const cancelar =
-        document.getElementById(
-            "cancelar-agendamento"
-        );
+        document.getElementById("cancelar-agendamento");
 
     const verificar =
-        document.getElementById(
-            "verificar-disponibilidade"
-        );
+        document.getElementById("verificar-disponibilidade");
 
     if (form) {
         form.addEventListener(
@@ -858,52 +864,57 @@ async function carregarAgendamentos() {
             return;
         }
 
-        tbody.innerHTML = agendamentos.map(item => `
-            <tr>
-                <td>${item.id_agendamentos ?? ""}</td>
+        tbody.innerHTML =
+            agendamentos.map(item => `
+                <tr>
 
-                <td>
-                    ${formatarData(item.data)}
-                </td>
+                    <td>
+                        ${item.id_agendamentos ?? ""}
+                    </td>
 
-                <td>
-                    ${item.horario ?? ""}
-                </td>
+                    <td>
+                        ${formatarData(item.data)}
+                    </td>
 
-                <td>
-                    ${item.cliente ?? ""}
-                </td>
+                    <td>
+                        ${item.horario ?? ""}
+                    </td>
 
-                <td>
-                    ${item.servico ?? ""}
-                </td>
+                    <td>
+                        ${item.cliente ?? ""}
+                    </td>
 
-                <td>
-                    ${item.funcionario ?? ""}
-                </td>
+                    <td>
+                        ${item.servico ?? ""}
+                    </td>
 
-                <td>
-                    <div class="acoes">
+                    <td>
+                        ${item.funcionario ?? ""}
+                    </td>
 
-                        <button
-                            type="button"
-                            onclick='editarAgendamento(${JSON.stringify(item)})'
-                        >
-                            Editar
-                        </button>
+                    <td>
+                        <div class="acoes">
 
-                        <button
-                            type="button"
-                            class="perigo"
-                            onclick="excluirAgendamento(${item.id_agendamentos})"
-                        >
-                            Excluir
-                        </button>
+                            <button
+                                type="button"
+                                onclick='editarAgendamento(${JSON.stringify(item)})'
+                            >
+                                Editar
+                            </button>
 
-                    </div>
-                </td>
-            </tr>
-        `).join("");
+                            <button
+                                type="button"
+                                class="perigo"
+                                onclick="excluirAgendamento(${item.id_agendamentos})"
+                            >
+                                Excluir
+                            </button>
+
+                        </div>
+                    </td>
+
+                </tr>
+            `).join("");
 
     } catch (error) {
         console.error(error);
@@ -1087,9 +1098,7 @@ async function carregarSelectsAgendamento() {
         /* CLIQUE NOS CARDS */
 
         document
-            .querySelectorAll(
-                ".servico-cliente-card"
-            )
+            .querySelectorAll(".servico-cliente-card")
             .forEach(card => {
 
                 card.addEventListener(
@@ -1185,13 +1194,16 @@ async function salvarAgendamento(event) {
         localStorage.getItem("id_usuario");
 
     if (!idUsuario) {
-        alert("Usuário não identificado. Faça login novamente.");
+        alert(
+            "Usuário não identificado. Faça login novamente."
+        );
         return;
     }
 
     try {
 
-        // Descobre automaticamente o cliente relacionado ao usuário
+        /* Descobre automaticamente o cliente relacionado ao usuário */
+
         const clientes =
             await request("/clientes");
 
@@ -1244,16 +1256,24 @@ async function salvarAgendamento(event) {
             );
         }
 
-        alert("Agendamento realizado com sucesso!");
+        alert(
+            id
+                ? "Agendamento atualizado com sucesso!"
+                : "Agendamento realizado com sucesso!"
+        );
 
         resetarFormularioAgendamento();
 
-        await carregarAgendamentos();
+        if (
+            document.body.dataset.page === "cliente"
+        ) {
+            await carregarAgendamentosCliente();
+        } else {
+            await carregarAgendamentos();
+        }
 
     } catch (error) {
-
         console.error(error);
-
         alert(error.message);
     }
 }
@@ -1263,7 +1283,6 @@ async function salvarAgendamento(event) {
 ========================================================= */
 
 function editarAgendamento(item) {
-
     const id =
         document.getElementById(
             "agendamento-id"
@@ -1354,13 +1373,11 @@ function editarAgendamento(item) {
 ========================================================= */
 
 async function excluirAgendamento(id) {
-
     if (!confirm("Excluir agendamento?")) {
         return;
     }
 
     try {
-
         await request(
             `/agendamentos/${id}`,
             {
@@ -1368,7 +1385,13 @@ async function excluirAgendamento(id) {
             }
         );
 
-        await carregarAgendamentos();
+        if (
+            document.body.dataset.page === "cliente"
+        ) {
+            await carregarAgendamentosCliente();
+        } else {
+            await carregarAgendamentos();
+        }
 
         limparListaDisponibilidade();
 
@@ -1382,7 +1405,6 @@ async function excluirAgendamento(id) {
 ========================================================= */
 
 function resetarFormularioAgendamento() {
-
     const form =
         document.getElementById(
             "form-agendamento"
@@ -1406,9 +1428,11 @@ function resetarFormularioAgendamento() {
             ".servico-cliente-card"
         )
         .forEach(card => {
+
             card.classList.remove(
                 "selecionado"
             );
+
         });
 
     limparListaDisponibilidade();
@@ -1419,7 +1443,6 @@ function resetarFormularioAgendamento() {
 ========================================================= */
 
 async function verificarDisponibilidade() {
-
     const data =
         document.getElementById(
             "agendamento-data"
@@ -1439,7 +1462,6 @@ async function verificarDisponibilidade() {
         alert(
             "Selecione data e funcionário."
         );
-
         return;
     }
 
@@ -1477,7 +1499,6 @@ async function verificarDisponibilidade() {
 }
 
 function limparListaDisponibilidade() {
-
     const lista =
         document.getElementById(
             "lista-disponibilidade"
@@ -1492,24 +1513,169 @@ function limparListaDisponibilidade() {
    CLIENTE
 ========================================================= */
 
-async function iniciarCliente() {
-
-    configurarFormularioClientes();
-
-    configurarFormularioAgendamentos();
-
-    await carregarClientes();
-
-    await carregarSelectsAgendamento();
-
-    const tabela =
+async function carregarAgendamentosCliente() {
+    const tbody =
         document.getElementById(
             "lista-agendamentos"
         );
 
-    if (tabela) {
-        await carregarAgendamentos();
+    if (!tbody) return;
+
+    try {
+
+        const nomeUsuario =
+            localStorage.getItem("nome");
+
+        const telefoneUsuario =
+            localStorage.getItem("telefone");
+
+        if (!nomeUsuario || !telefoneUsuario) {
+
+            tbody.innerHTML =
+                criarLinhaVazia(
+                    7,
+                    "Usuário não identificado. Faça login novamente."
+                );
+
+            return;
+        }
+
+        /* Descobre o cliente logado */
+
+        const cliente =
+            await request(
+                `/cliente-logado?nome=${encodeURIComponent(nomeUsuario)}&telefone=${encodeURIComponent(telefoneUsuario)}`
+            );
+
+        if (!cliente) {
+
+            tbody.innerHTML =
+                criarLinhaVazia(
+                    7,
+                    "Cliente não encontrado."
+                );
+
+            return;
+        }
+
+        const clienteId =
+            cliente.id_clientes ||
+            cliente.id_cliente ||
+            cliente.cliente_id;
+
+        if (!clienteId) {
+
+            console.error(
+                "Resposta do cliente:",
+                cliente
+            );
+
+            tbody.innerHTML =
+                criarLinhaVazia(
+                    7,
+                    "Não foi possível identificar seu cadastro."
+                );
+
+            return;
+        }
+
+        /* Busca os agendamentos */
+
+        const agendamentos =
+            await request("/agendamentos");
+
+        /* Mostra somente os agendamentos desse cliente */
+
+        const meusAgendamentos =
+            agendamentos.filter(item =>
+                Number(
+                    item.clientes_id_clientes
+                ) === Number(clienteId)
+            );
+
+        if (!meusAgendamentos.length) {
+
+            tbody.innerHTML =
+                criarLinhaVazia(
+                    7,
+                    "Você ainda não possui agendamentos."
+                );
+
+            return;
+        }
+
+        tbody.innerHTML =
+            meusAgendamentos.map(item => `
+                <tr>
+
+                    <td>
+                        ${item.id_agendamentos ?? ""}
+                    </td>
+
+                    <td>
+                        ${formatarData(item.data)}
+                    </td>
+
+                    <td>
+                        ${item.horario ?? ""}
+                    </td>
+
+                    <td>
+                        ${item.cliente ?? nomeUsuario}
+                    </td>
+
+                    <td>
+                        ${item.servico ?? ""}
+                    </td>
+
+                    <td>
+                        ${item.funcionario ?? ""}
+                    </td>
+
+                    <td>
+                        <div class="acoes">
+
+                            <button
+                                type="button"
+                                onclick='editarAgendamento(${JSON.stringify(item)})'
+                            >
+                                Editar
+                            </button>
+
+                            <button
+                                type="button"
+                                class="perigo"
+                                onclick="excluirAgendamento(${item.id_agendamentos})"
+                            >
+                                Cancelar
+                            </button>
+
+                        </div>
+                    </td>
+
+                </tr>
+            `).join("");
+
+    } catch (error) {
+
+        console.error(
+            "Erro ao carregar meus agendamentos:",
+            error
+        );
+
+        tbody.innerHTML =
+            criarLinhaVazia(
+                7,
+                error.message
+            );
     }
+}
+
+async function iniciarCliente() {
+    configurarFormularioAgendamentos();
+
+    await carregarSelectsAgendamento();
+    await carregarAgendamentosCliente();
 }
 
 /* =========================================================
@@ -1517,7 +1683,6 @@ async function iniciarCliente() {
 ========================================================= */
 
 function configurarTema() {
-
     const botao =
         document.getElementById("tema");
 
@@ -1534,7 +1699,6 @@ function configurarTema() {
     ) {
 
         document.body.classList.add("dark");
-
         document.body.classList.remove("light");
 
         botao.textContent = "☀️";
@@ -1542,7 +1706,6 @@ function configurarTema() {
     } else {
 
         document.body.classList.remove("dark");
-
         document.body.classList.remove("light");
 
         botao.textContent = "🌙";

@@ -1,155 +1,388 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
+
 <head>
     <link rel="manifest" href="manifest.json">
     <meta name="theme-color" content="#660000">
+
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
     <title>Área do Cliente</title>
+
     <link rel="stylesheet" href="../css/styles.css">
 </head>
 
 <body data-page="cliente">
 
-<button id="tema">🌙</button>
+    <!-- BOTÃO TEMA -->
+    <button id="tema">🌙</button>
 
-<header>
-    <div class="container topo">
-        <div class="logo-area">
-            <img src="../Imagens/1.png" class="logo">
-            <h1>Área do Cliente</h1>
+    <!-- =============================== -->
+    <!-- HEADER -->
+    <!-- =============================== -->
+
+    <header>
+        <div class="container topo">
+
+            <div class="logo-area">
+                <img src="../Imagens/1.png" class="logo" alt="Logo">
+                <h1>Área do Cliente</h1>
+            </div>
+
+            <nav>
+                <a href="#" id="btnSair">Sair</a>
+            </nav>
+
         </div>
+    </header>
 
-        <nav>
-            <a href="#" id="btnSair">Sair</a>
-        </nav>
-    </div>
-</header>
+    <!-- =============================== -->
+    <!-- CONTEÚDO -->
+    <!-- =============================== -->
 
-<main class="container">
+    <main class="container">
 
-    <section class="card">
-        <h2 id="boasVindas">Olá!</h2>
-        <p>Bem-vindo à área do cliente.</p>
-    </section>
+        <!-- =============================== -->
+        <!-- BOAS-VINDAS -->
+        <!-- =============================== -->
+
+        <section class="card">
+
+            <h2 id="boasVindas">Olá!</h2>
+
+            <p>
+                Bem-vindo à área do cliente.
+            </p>
+
+        </section>
 
 
-    <section class="card secao">
-        <h2>Agendamento</h2>
+        <!-- =============================== -->
+        <!-- AGENDAMENTO -->
+        <!-- =============================== -->
 
-        <form id="form-agendamento" class="form-grid">
+        <section class="card secao">
 
-            <input type="hidden" id="agendamento-id">
+            <h2>Agendamento</h2>
+
+            <form id="form-agendamento" class="form-grid">
+
+                <!-- ID DO AGENDAMENTO -->
+                <input
+                    type="hidden"
+                    id="agendamento-id"
+                >
+
+
+                <!-- =============================== -->
+                <!-- DATA -->
+                <!-- =============================== -->
+
+                <div>
+
+                    <label for="agendamento-data">
+                        Data
+                    </label>
+
+                    <input
+                        type="date"
+                        id="agendamento-data"
+                        required
+                    >
+
+                </div>
+
+
+                <!-- =============================== -->
+                <!-- HORÁRIO -->
+                <!-- =============================== -->
+
+                <div>
+
+                    <label for="agendamento-horario">
+                        Horário
+                    </label>
+
+                    <input
+                        type="time"
+                        id="agendamento-horario"
+                        required
+                    >
+
+                </div>
+
+
+                <!-- =============================== -->
+                <!-- SERVIÇO -->
+                <!-- =============================== -->
+
+                <div class="full">
+
+                    <label>
+                        Escolha seu corte
+                    </label>
+
+                    <div
+                        id="lista-servicos-cliente"
+                        class="servicos-cliente"
+                    >
+                        <p>
+                            Carregando cortes...
+                        </p>
+                    </div>
+
+                    <!--
+                        Select escondido.
+                        O JavaScript usa este campo para
+                        armazenar o ID do serviço escolhido.
+                    -->
+
+                    <select
+                        id="agendamento-servico"
+                        style="display: none;"
+                    >
+                        <option value="">
+                            Selecione
+                        </option>
+                    </select>
+
+                </div>
+
+
+                <!-- =============================== -->
+                <!-- FUNCIONÁRIO -->
+                <!-- =============================== -->
+
+                <div class="full">
+
+                    <label for="agendamento-funcionario">
+                        Funcionário
+                    </label>
+
+                    <select
+                        id="agendamento-funcionario"
+                        required
+                    >
+
+                        <option value="">
+                            Selecione
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+                <!-- =============================== -->
+                <!-- BOTÕES -->
+                <!-- =============================== -->
+
+                <div class="full botoes">
+
+                    <button
+                        type="submit"
+                        id="btn-agendar"
+                    >
+                        Agendar
+                    </button>
+
+
+                    <button
+                        type="button"
+                        id="verificar-disponibilidade"
+                    >
+                        Ver disponibilidade
+                    </button>
+
+
+                    <button
+                        type="button"
+                        id="cancelar-agendamento"
+                        class="perigo"
+                    >
+                        Cancelar
+                    </button>
+
+                </div>
+
+            </form>
+
+
+            <!-- =============================== -->
+            <!-- DISPONIBILIDADE -->
+            <!-- =============================== -->
 
             <div>
-                <label for="agendamento-data">Data</label>
-                <input type="date" id="agendamento-data" required>
+
+                <h3>
+                    Horários ocupados
+                </h3>
+
+                <ul
+                    id="lista-disponibilidade"
+                    class="lista-disponibilidade"
+                ></ul>
+
             </div>
 
-            <div>
-                <label for="agendamento-horario">Horário</label>
-                <input type="time" id="agendamento-horario" required>
+
+            <!-- =============================== -->
+            <!-- MEUS AGENDAMENTOS -->
+            <!-- =============================== -->
+
+            <div class="tabela-wrap">
+
+                <h3>
+                    Meus agendamentos
+                </h3>
+
+                <table>
+
+                    <thead>
+
+                        <tr>
+
+                            <th>ID</th>
+                            <th>Data</th>
+                            <th>Horário</th>
+                            <th>Cliente</th>
+                            <th>Serviço</th>
+                            <th>Funcionário</th>
+                            <th>Ações</th>
+
+                        </tr>
+
+                    </thead>
+
+
+                    <tbody id="lista-agendamentos">
+
+                        <tr>
+
+                            <td colspan="7">
+                                Carregando...
+                            </td>
+
+                        </tr>
+
+                    </tbody>
+
+                </table>
+
             </div>
 
-        
+        </section>
 
-            <div class="full">
-    <label>Escolha seu corte</label>
+    </main>
 
-    <div id="lista-servicos-cliente" class="servicos-cliente">
-        <p>Carregando cortes...</p>
+
+    <!-- =============================== -->
+    <!-- LOGIN / USUÁRIO -->
+    <!-- =============================== -->
+
+    <script>
+
+        const nome = localStorage.getItem("nome");
+
+        if (nome) {
+
+            const boasVindas =
+                document.getElementById("boasVindas");
+
+            if (boasVindas) {
+
+                boasVindas.innerText =
+                    `Olá, ${nome}!`;
+
+            }
+
+        }
+
+
+        // ===============================
+        // SAIR
+        // ===============================
+
+        const btnSair =
+            document.getElementById("btnSair");
+
+        if (btnSair) {
+
+            btnSair.addEventListener(
+                "click",
+                (event) => {
+
+                    event.preventDefault();
+
+                    localStorage.removeItem("nome");
+                    localStorage.removeItem("tipo");
+                    localStorage.removeItem("id");
+                    localStorage.removeItem("id_usuario");
+                    localStorage.removeItem("cliente_id");
+                    localStorage.removeItem("telefone");
+
+                    window.location.href =
+                        "../login.html";
+
+                }
+            );
+
+        }
+
+    </script>
+
+
+    <!-- =============================== -->
+    <!-- JAVASCRIPT PRINCIPAL -->
+    <!-- =============================== -->
+
+    <script src="/frontend/js/app.js"></script>
+
+
+    <!-- =============================== -->
+    <!-- SERVICE WORKER -->
+    <!-- =============================== -->
+
+    <script>
+
+        if ("serviceWorker" in navigator) {
+
+            navigator.serviceWorker.register("sw.js")
+                .catch(error => {
+
+                    console.error(
+                        "Erro ao registrar Service Worker:",
+                        error
+                    );
+
+                });
+
+        }
+
+    </script>
+
+
+    <!-- =============================== -->
+    <!-- MENU MOBILE -->
+    <!-- =============================== -->
+
+    <div class="menu-mobile">
+
+        <a href="index.html">
+            🏠
+        </a>
+
+        <a href="dashboard.html">
+            📋
+        </a>
+
+        <a href="cliente.html">
+            👤
+        </a>
+
     </div>
-
-    <!-- Continua existindo para o sistema usar o ID do serviço -->
-    <select id="agendamento-servico" style="display: none;">
-        <option value="">Selecione</option>
-    </select>
-</div>
-
-            <div class="full">
-                <label for="agendamento-funcionario">Funcionário</label>
-                <select id="agendamento-funcionario" required>
-                    <option value="">Selecione</option>
-                </select>
-            </div>
-
-            <div class="full botoes">
-                <button type="submit">Agendar</button>
-
-                <button
-                    type="button"
-                    id="verificar-disponibilidade">
-                    Ver disponibilidade
-                </button>
-
-                <button
-                    type="button"
-                    id="cancelar-agendamento"
-                    class="perigo">
-                    Cancelar
-                </button>
-            </div>
-
-        </form>
-
-        <div>
-            <h3>Horários ocupados</h3>
-            <ul id="lista-disponibilidade" class="lista-disponibilidade"></ul>
-        </div>
-
-        <div class="tabela-wrap">
-            <table>
-                <thead>
-                    <tr>
-                        <th>ID</th>
-                        <th>Data</th>
-                        <th>Horário</th>
-                        <th>Cliente</th>
-                        <th>Serviço</th>
-                        <th>Funcionário</th>
-                        <th>Ações</th>
-                    </tr>
-                </thead>
-
-                <tbody id="lista-agendamentos">
-                    <tr>
-                        <td colspan="7">Carregando...</td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
-
-    </section>
-
-</main>
-
-<script>
-const nome = localStorage.getItem("nome");
-
-if (nome) {
-    document.getElementById("boasVindas").innerText = `Olá, ${nome}!`;
-}
-
-document.getElementById("btnSair").addEventListener("click", () => {
-    localStorage.removeItem("nome");
-    localStorage.removeItem("tipo");
-    window.location.href = "../login.html";
-});
-</script>
-
-<script src="/frontend/js/app.js"></script>
-
-<script>
-if ("serviceWorker" in navigator) {
-    navigator.serviceWorker.register("sw.js");
-}
-</script>
-
-<div class="menu-mobile">
-    <a href="index.html">🏠</a>
-    <a href="dashboard.html">📋</a>
-    <a href="cliente.html">👤</a>
-</div>
 
 </body>
+
 </html>
